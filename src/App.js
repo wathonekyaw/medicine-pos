@@ -31,7 +31,8 @@ import RolesPermissions from "./pages/RolesPermissions";
 import Warehouse from "./pages/Warehouse";
 import Reports from "./pages/Reports";
 import Login from "./pages/Login";
-import POS from "./pages/sidebar-sub-items/POS.jsx";
+import POS from "./pages/sidebar-sub-items/POS.jsx"; // Ensure POS is imported
+import "./App.css";
 
 function App() {
   const [user] = useAuthState(auth);
@@ -77,7 +78,8 @@ function App() {
                 />
                 <Route path="/warehouse" element={<Warehouse />} />
                 <Route path="/reports" element={<Reports />} />
-                <Route path="/pos" element={<POS />} />
+                <Route path="/pos" element={<POS />} />{" "}
+                {/* Ensure POS route is here */}
                 <Route path="*" element={<Navigate to="/dashboard" />} />
               </Routes>
             </Box>
