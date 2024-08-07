@@ -30,10 +30,10 @@ const Header = () => {
       sx={{
         backgroundColor: "#fff",
         padding: "16px",
-        boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+        // boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
       }}
     >
-      <Typography variant="h6">Dashboard</Typography>
+      <Typography variant="h6">Aung Tha Bu Medicine</Typography>
     </Box>
   );
 };
