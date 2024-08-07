@@ -68,7 +68,7 @@ const CreateProduct = ({ onClose, fetchProducts }) => {
   return (
     <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center">
       <div className="bg-white p-8 rounded-lg w-2/3 h-3/4 overflow-auto">
-        <h2 className="text-2xl mb-4">Create Product</h2>
+        <h2 className="text-2xl mb-4">Create Productssss</h2>
         <form onSubmit={handleSubmit}>
           {/* First Row */}
           <div className="grid grid-cols-2 gap-4">

@@ -28,7 +28,7 @@ const ProductList = ({ products }) => {
   return (
     <div className="container mx-auto p-4">
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-2xl font-bold">Products</h2>
+        <h2 className="text-2xl font-bold">Products....</h2>
         <button className="bg-blue-500 text-white px-4 py-2 rounded-lg">
           Create Product
         </button>
@@ -36,7 +36,7 @@ const ProductList = ({ products }) => {
       <table className="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
         <thead className="bg-gray-800 text-white">
           <tr>
-            <th className="w-1/6 py-3 px-4 text-left">Product</th>
+            <th className="w-1/6 py-3 px-4 text-left">Productssssss</th>
             <th className="w-1/6 py-3 px-4 text-left">Name</th>
             <th className="w-1/6 py-3 px-4 text-left">Code</th>
             <th className="w-1/6 py-3 px-4 text-left">Brand</th>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   Typography,
   Box,
@@ -13,91 +13,50 @@ import {
   Paper,
   Grid,
 } from "@mui/material";
-
-const rows = [
-  {
-    name: "AZIFAM 100 Susp (AZIFAM 100 Susp (A))",
-    date: "2028-07-01",
-    uom: "Each",
-    qty: 1,
-    price: 3500.0,
-    total: 3500.0,
-  },
-  {
-    name: "AZIFAM 100 Susp (AZIFAM 100 Susp (A))",
-    date: "2028-07-01",
-    uom: "Each",
-    qty: 1,
-    price: 3500.0,
-    total: 3500.0,
-  },
-  {
-    name: "AZIFAM 100 Susp (AZIFAM 100 Susp (A))",
-    date: "2028-07-01",
-    uom: "Each",
-    qty: 1,
-    price: 3500.0,
-    total: 3500.0,
-  },
-  {
-    name: "AZIFAM 100 Susp (AZIFAM 100 Susp (A))",
-    date: "2028-07-01",
-    uom: "Each",
-    qty: 1,
-    price: 3500.0,
-    total: 3500.0,
-  },
-  {
-    name: "AZIFAM 100 Susp (AZIFAM 100 Susp (A))",
-    date: "2028-07-01",
-    uom: "Each",
-    qty: 1,
-    price: 3500.0,
-    total: 3500.0,
-  },
-  {
-    name: "AZIFAM 100 Susp (AZIFAM 100 Susp (A))",
-    date: "2028-07-01",
-    uom: "Each",
-    qty: 1,
-    price: 3500.0,
-    total: 3500.0,
-  },
-  {
-    name: "AZIFAM 100 Susp (AZIFAM 100 Susp (A))",
-    date: "2028-07-01",
-    uom: "Each",
-    qty: 1,
-    price: 3500.0,
-    total: 3500.0,
-  },
-  {
-    name: "AZIFAM 100 Susp (AZIFAM 100 Susp (A))",
-    date: "2028-07-01",
-    uom: "Each",
-    qty: 1,
-    price: 3500.0,
-    total: 3500.0,
-  },
-  {
-    name: "AZIFAM 100 Susp (AZIFAM 100 Susp (A))",
-    date: "2028-07-01",
-    uom: "Each",
-    qty: 1,
-    price: 3500.0,
-    total: 3500.0,
-  },
-  {
-    name: "Auritz 10 (Auritz 10 (A))",
-    date: "2028-07-01",
-    uom: "Each",
-    qty: 1,
-    price: 8400.0,
-    total: 8400.0,
-  },
-];
+import axios from "axios";
 
 const POS = () => {
+  const [rows, setRows] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await axios.get("http://localhost:5000/api/products");
+        setRows(response.data.map((row) => ({ ...row, qty: 1 })));
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      }
+    };
+
+    fetchProducts();
+  }, []);
+
+  const handleSearchChange = (event) => {
+    setSearchQuery(event.target.value);
+  };
+
+  const handleQtyChange = (index, value) => {
+    setRows((prevRows) =>
+      prevRows.map((row, i) => (i === index ? { ...row, qty: value } : row))
+    );
+  };
+
+  const filteredRows = rows.filter(
+    (row) =>
+      row.productName &&
+      row.productName.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const totalQuantity = filteredRows.reduce(
+    (sum, row) => sum + (row.qty || 0),
+    0
+  );
+  const totalPrice = filteredRows.reduce(
+    (sum, row) => sum + (row.productPrice || 0) * (row.qty || 0),
+    0
+  );
+
   return (
     <Box display="flex" flexDirection="column" minHeight="100vh">
       <Box p={2} flex="1">
@@ -109,6 +68,8 @@ const POS = () => {
             fullWidth
             variant="outlined"
             placeholder="ထုတ်ကုန်များကိုရှာဖွေပါ..."
+            value={searchQuery}
+            onChange={handleSearchChange}
             InputProps={{
               endAdornment: (
                 <Button variant="contained" sx={{ ml: 1 }}>
@@ -131,30 +92,40 @@ const POS = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {rows.map((row, index) => (
+              {filteredRows.map((row, index) => (
                 <TableRow key={index}>
-                  <TableCell>{row.name}</TableCell>
-                  <TableCell>{row.date}</TableCell>
+                  <TableCell>{row.productName || "N/A"}</TableCell>
+                  <TableCell>
+                    {new Date(row.createdOn).toLocaleDateString()}
+                  </TableCell>
                   <TableCell>
                     <TextField
                       select
                       SelectProps={{ native: true }}
-                      value={row.uom}
+                      value={row.unit || ""}
                       size="small"
                     >
                       <option value="Each">Each</option>
                       <option value="Box">Box</option>
                     </TextField>
                   </TableCell>
-                  <TableCell>{row.price.toLocaleString()} Ks</TableCell>
+                  <TableCell>
+                    {row.productPrice ? row.productPrice.toLocaleString() : "0"}{" "}
+                    Ks
+                  </TableCell>
                   <TableCell>
                     <TextField
                       type="number"
-                      defaultValue={row.qty}
+                      value={row.qty}
+                      onChange={(e) =>
+                        handleQtyChange(index, parseInt(e.target.value) || 0)
+                      }
                       size="small"
                     />
                   </TableCell>
-                  <TableCell>{row.total.toLocaleString()} Ks</TableCell>
+                  <TableCell>
+                    {(row.productPrice * row.qty).toLocaleString()} Ks
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -164,7 +135,8 @@ const POS = () => {
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
               <Typography variant="body1">
-                စုစုပေါင်းအရေအတွက်: 2 (2.00Ks)
+                စုစုပေါင်းအရေအတွက်: {totalQuantity} (
+                {totalPrice.toLocaleString()} Ks)
               </Typography>
               <Typography variant="body1">
                 လျှော့စျေး: (0.00Ks) 0.00Ks
@@ -179,7 +151,7 @@ const POS = () => {
               alignItems="center"
             >
               <Typography variant="h6" sx={{ marginRight: 2 }}>
-                စုစုပေါင်း: 11,900.00Ks
+                စုစုပေါင်း: {totalPrice.toLocaleString()} Ks
               </Typography>
               <Button variant="contained" color="primary">
                 အတည်ပြုသည်
